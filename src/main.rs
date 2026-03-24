@@ -2,8 +2,10 @@
 use winit::application::ApplicationHandler;
 use winit::event::WindowEvent;
 use winit::event_loop::{ActiveEventLoop, EventLoop};
+use winit::keyboard::PhysicalKey;
 use winit::window::{Window, WindowAttributes, WindowId};
 use winit::dpi::LogicalSize;
+use winit::keyboard::KeyCode;
 //tacing
 use tracing::info;
 
@@ -14,10 +16,12 @@ struct App {
 impl ApplicationHandler for App {
     fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
         let window = event_loop
-            .create_window(WindowAttributes::default())
-            .unwrap();
-        let _ = window.request_surface_size(LogicalSize::new(1280.0, 720.0).into());
-        let _ = window.set_title("Oxicube");
+            .create_window(WindowAttributes::default()
+                                .with_title("Oxicube")
+                                .with_surface_size(LogicalSize::new(1280.0, 720.0)))
+                                .unwrap();
+        // let _ = window.request_surface_size(LogicalSize::new(1280.0, 720.0).into());
+        // let _ = window.set_title("Oxicube");
         self.window = Some(window);
     }
     fn window_event(
@@ -37,17 +41,17 @@ impl ApplicationHandler for App {
             WindowEvent::SurfaceResized(size) => {
                 print!("resized: {:#?}", size);
             }
-            WindowEvent::KeyboardInput { device_id, event, is_synthetic } => {
+            WindowEvent::KeyboardInput {event, .. } => {
                 if let Some(text) = &event.text {
                     println!("key={:?} state={:?} text={:?}",
                         event.physical_key,
                         event.state,
                         text
                     );
-                    if text == "\u{1b}" {
-                        println!("Close window");
-                        event_loop.exit();
-                    }
+                }
+                if event.physical_key == PhysicalKey::Code(KeyCode::Escape) {
+                    println!("Close window");
+                    event_loop.exit();
                 }
             }
 
