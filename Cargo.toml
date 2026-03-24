@@ -10,3 +10,6 @@ tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 wgpu = "29.0.0"
 winit = { version = "0.31.0-beta.2", features = ["serde"] }
+env_logger = "0.11"
+image = "0.25"
+bytemuck = { version = "1", features = ["derive"] }
